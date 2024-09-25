@@ -14,7 +14,7 @@ namespace Game
             {
                 return null;
             }
-
+            
             // initialize pathfinding
             foreach (Node node in m_nodes.Values)
             {
@@ -65,9 +65,21 @@ namespace Game
                         {
                             if (!closed.Contains(neighbor) && neighbor.Owner == null)
                             {
-                                float newDistance = current.m_fDistance + Vector3.Distance(current.WorldPosition, neighbor.WorldPosition) +      // Distance to node
-                                                    neighbor.AdditionalCost + link.AdditionalCost;                                               // additional costs
 
+                                float newDistance;
+                                
+                                // Checks if Enemy is walking and creates distance
+                                if (controller is EnemyController)
+                                {
+                                    newDistance = current.m_fDistance +
+                                                  Vector3.Distance(current.WorldPosition, neighbor.WorldPosition);
+                                }
+                                else
+                                {
+                                    newDistance = current.m_fDistance + Vector3.Distance(current.WorldPosition, neighbor.WorldPosition) +      // Distance to node
+                                                  neighbor.AdditionalCost + link.AdditionalCost;                                               // additional costs
+                                }
+                                
                                 if (closed.Contains(neighbor) ||
                                     open.Contains(neighbor))
                                 {

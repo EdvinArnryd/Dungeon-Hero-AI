@@ -9,7 +9,7 @@ namespace Game.Actions
     {
         private DungeonLink     m_moveLink;
 
-        public Action_MoveTowards(Controller controller, Controller target) : this(controller, target.Node)
+        public Action_MoveTowards(Controller controller, Controller target) : this(controller, target.Node != null ? target.Node : GraphAlgorithms.GetClosestNode<Dungeon.Node>(Dungeon.Instance, target.transform.position))
         {            
         }
 
@@ -49,6 +49,7 @@ namespace Game.Actions
                 GraphAlgorithms.Path path = Dungeon.Instance.GetShortestPath(controller, controller.Node, targetNode);
                 if (path != null && path.Count > 0)
                 {
+                    Controller.LastPath = path;
                     m_moveLink = path[0] as DungeonLink;
                 }
             }

@@ -14,6 +14,7 @@ namespace Game
             {
                 return null;
             }
+
             // initialize pathfinding
             foreach (Node node in m_nodes.Values)
             {

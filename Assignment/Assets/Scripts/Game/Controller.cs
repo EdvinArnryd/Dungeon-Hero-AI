@@ -12,11 +12,11 @@ namespace Game
 {
     public abstract class Controller : Brain
     {
-        private Dungeon.Node    m_node;
-        private Transform       m_meshTransform;
-        private float           m_fBounce;
-        private int             m_iHP;
-        private HPBar           m_hpBar;
+        private Dungeon.Node            m_node;
+        private Transform               m_meshTransform;
+        private float                   m_fBounce;
+        private int                     m_iHP;
+        private HPBar                   m_hpBar;
 
         #region Properties
 
@@ -57,6 +57,8 @@ namespace Game
             }
         }
 
+        public GraphAlgorithms.Path LastPath { get; set; }
+
         public Transform MeshTransform => m_meshTransform;
 
         public abstract float MovementSpeed { get; }
@@ -92,6 +94,11 @@ namespace Game
 
         public virtual void TakeDamage(int iDMG)
         {
+            if (!IsAlive)
+            {
+                return;
+            }
+
             m_iHP -= iDMG;
             if (m_iHP <= 0)
             {
@@ -132,7 +139,7 @@ namespace Game
             if (other != null && other != this)
             {
                 List<ILink> links = new List<ILink>(Node.Links);
-                if (links.FindIndex(l => l.Target == other.Node) >= 0)
+                if (links.FindIndex(l => l is Link_Normal && l.Target == other.Node) >= 0)
                 {
                     return true;
                 }
@@ -153,6 +160,7 @@ namespace Game
             transform.position = Node.Position;
 
             // think up a new action to do?
+            yield return new WaitForSeconds(0.1f);
             while (IsAlive)
             {
                 ControllerAction action = Think();
@@ -191,9 +199,29 @@ namespace Game
             }
 
             // self destruct
+            Node = null;
             Destroy(gameObject);
         }
 
         public abstract ControllerAction Think();
+
+        protected virtual void OnDrawGizmosSelected()
+        {
+            if (LastPath != null && LastPath.Count > 0)
+            {
+                Vector3 vOffset = Vector3.up * 0.1f;
+
+                // draw first/current link
+                Gizmos.color = Color.red;
+                Gizmos.DrawLine((LastPath[0].Source as Dungeon.Node).WorldPosition + vOffset, (LastPath[0].Target as Dungeon.Node).WorldPosition + vOffset);
+
+                // draw remaining path
+                Gizmos.color = Color.yellow;
+                for (int i = 1; i < LastPath.Count; i++)
+                {
+                    Gizmos.DrawLine((LastPath[i].Source as Dungeon.Node).WorldPosition + vOffset, (LastPath[i].Target as Dungeon.Node).WorldPosition + vOffset);
+                }
+            }
+        }
     }
 }

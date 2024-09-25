@@ -48,9 +48,14 @@ namespace Game
             }
 
             // deal damage
+            HashSet<Controller> processedControllers = new HashSet<Controller>();
             foreach (Node_Trap node in m_trapNodes)
             {
-                node.Owner?.TakeDamage(1);
+                if (node.Owner != null && !processedControllers.Contains(node.Owner))
+                {
+                    node.Owner?.TakeDamage(1);
+                    processedControllers.Add(node.Owner);
+                }
             }
 
             // wait a while

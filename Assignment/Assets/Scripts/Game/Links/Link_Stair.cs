@@ -7,17 +7,14 @@ using UnityEngine.XR;
 
 namespace Game
 {
-    public class Link_Ladder : DungeonLink
+    public class Link_Stair : DungeonLink
     {
-        private Vector3 m_vForward;
-
         #region Properties
 
         #endregion
 
-        public Link_Ladder(Dungeon.Node source, Dungeon.Node target, Vector3 vForward) : base(source, target)
+        public Link_Stair(Dungeon.Node source, Dungeon.Node target) : base(source, target)
         {
-            m_vForward = vForward;
         }
 
         public override IEnumerator MoveController(Controller controller)
@@ -33,10 +30,12 @@ namespace Game
                 else
                 {
                     // move towards next node
-                    controller.transform.position = Vector3.MoveTowards(controller.transform.position, Target.WorldPosition, Time.deltaTime * controller.MovementSpeed * 0.6f);
+                    controller.transform.position = Vector3.MoveTowards(controller.transform.position, Target.WorldPosition, Time.deltaTime * controller.MovementSpeed * 0.8f);
 
-                    // rotate towards to face ladder
-                    controller.transform.rotation = Quaternion.Slerp(controller.transform.rotation, Quaternion.LookRotation(m_vForward), Time.deltaTime * 4.0f);
+                    // rotate towards to face forward 
+                    Vector3 vForward = Direction;
+                    vForward.y = 0.0f;
+                    controller.transform.rotation = Quaternion.Slerp(controller.transform.rotation, Quaternion.LookRotation(vForward.normalized), Time.deltaTime * 4.0f);
 
                     yield return null;
                 }

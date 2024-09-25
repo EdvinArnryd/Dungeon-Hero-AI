@@ -17,8 +17,8 @@ namespace Game
                 Dungeon.Node target = GraphAlgorithms.GetClosestNode<Dungeon.Node>(Dungeon.Instance, t.position + t.forward * 1 - t.right * i, 1.0f);
                 if (source != null && target != null)
                 {
-                    source.AddLink(new Link_Normal(source, target));
-                    target.AddLink(new Link_Normal(target, source));
+                    source.AddLink(new Link_Stair(source, target));
+                    target.AddLink(new Link_Stair(target, source));
                 }
             }
         }

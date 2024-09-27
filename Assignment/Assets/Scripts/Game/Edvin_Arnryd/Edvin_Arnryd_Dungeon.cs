@@ -65,9 +65,8 @@ namespace Game
                         {
                             if (!closed.Contains(neighbor) && neighbor.Owner == null)
                             {
-
-                                float newDistance;
                                 
+                                float newDistance;
                                 // Checks if Enemy is walking and creates distance
                                 if (controller is EnemyController)
                                 {

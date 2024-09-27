@@ -23,10 +23,35 @@ namespace Edvin_Arnryd
             }
 
             Heart heart = Heart.AllHearts.Count > 0 ? Heart.AllHearts[0] : null;
+            Heart closestHeart = Heart.AllHearts.Count > 0 ? Heart.AllHearts[0] : null;
+            
+            
             if (heart != null)
             {
-                return new Action_MoveTowards(this, heart.Node);
+                GraphAlgorithms.Path aPath = Dungeon.Instance.GetShortestPath(this, this.Node, heart.Node);
+                GraphAlgorithms.Path shortestPath = aPath;
+                foreach (var eachHeart in Heart.AllHearts)
+                {
+                    GraphAlgorithms.Path path = Dungeon.Instance.GetShortestPath(this, this.Node, eachHeart.Node);
+                    if (path.Count < shortestPath.Count)
+                    {
+                        shortestPath = path;
+                        closestHeart = eachHeart;
+                    }
+                }
             }
+            
+
+            if (closestHeart != null)
+            {
+                return new Action_MoveTowards(this, closestHeart.Node);
+            }
+            
+            
+            // if (heart != null)
+            // {
+            //     return new Action_MoveTowards(this, heart.Node);
+            // }
             
             return new Action_Wait(this, 1.0f);
         }
